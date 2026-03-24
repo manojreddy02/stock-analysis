@@ -1,6 +1,6 @@
 # Stock Market Fundamental Analysis — CrewAI Agent System
 
-A multi-agent AI system built with [CrewAI](https://www.crewai.com/) and OpenAI that performs comprehensive fundamental analysis on any publicly traded stock. Three specialized agents — researcher, analyst, and report writer — collaborate to deliver a professional investment analysis report using live web data.
+A multi-agent AI system built with [CrewAI](https://www.crewai.com/) and Azure OpenAI that performs comprehensive fundamental analysis on any publicly traded stock. Three specialized agents — researcher, analyst, and report writer — collaborate to deliver a professional investment analysis report using live web data.
 
 ## How It Works
 
@@ -15,7 +15,7 @@ Three specialized AI agents collaborate in sequence:
 ## Prerequisites
 
 - **Python** >= 3.10, < 3.14
-- **OpenAI** API key with access to a model (e.g., `gpt-4o`)
+- **Azure OpenAI** resource with a deployed model (e.g., `gpt-4o`)
 - **Serper API key** for web search (free tier available)
 
 ---
@@ -45,17 +45,24 @@ cp .env.example .env
 Open `.env` and fill in your actual values:
 
 ```env
-# ── OpenAI ──
-OPENAI_API_KEY=your-openai-api-key
-OPENAI_MODEL_NAME=gpt-4o
+# ── Azure OpenAI ──
+AZURE_API_KEY=your-azure-openai-api-key
+AZURE_API_BASE=https://your-resource-name.openai.azure.com/
+AZURE_API_VERSION=2024-08-01-preview
+AZURE_DEPLOYMENT_NAME=gpt-4o
 
 # ── Serper (Web Search) ──
 SERPER_API_KEY=your-serper-api-key
 ```
 
-**Where to find your OpenAI key:**
+**Where to find your Azure values:**
 
-Go to [platform.openai.com/api-keys](https://platform.openai.com/api-keys), create a new secret key, and paste it as `OPENAI_API_KEY`.
+| Variable | Where to find it |
+|---|---|
+| `AZURE_API_KEY` | Azure Portal → Your OpenAI resource → **Keys and Endpoint** → Key1 or Key2 |
+| `AZURE_API_BASE` | Same page → **Endpoint** URL |
+| `AZURE_API_VERSION` | Use `2024-08-01-preview` or check [Azure docs](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference) for the latest |
+| `AZURE_DEPLOYMENT_NAME` | Azure Portal → Your OpenAI resource → **Model deployments** → deployment name |
 
 **Where to get a Serper key:**
 
@@ -127,11 +134,12 @@ The generated report includes:
 
 | Problem | Solution |
 |---|---|
-| `ImportError: Azure AI Inference native provider not available` | Run `pip install 'crewai[azure-ai-inference]'` — only needed if using Azure |
-| `Missing required environment variables` | Check your `.env` file has all variables filled in |
-| `401 Unauthorized` | Verify your `OPENAI_API_KEY` is correct and has billing enabled |
+| `ImportError: Azure AI Inference native provider not available` | Run `pip install 'crewai[azure-ai-inference]'` |
+| `Missing required environment variables` | Check your `.env` file has all 5 variables filled in |
+| `401 Unauthorized` from Azure | Verify `AZURE_API_KEY` and `AZURE_API_BASE` are correct |
+| `DeploymentNotFound` | Make sure `AZURE_DEPLOYMENT_NAME` matches your Azure deployment exactly |
 | Agent not using web search | Verify `SERPER_API_KEY` is valid — check credits at [serper.dev](https://serper.dev/) |
-| Rate limited (429) | You've hit OpenAI's rate limit — wait a moment or check your plan's usage limits |
+| Rate limited (429) | Azure is throttling — request a quota increase at [aka.ms/oai/quotaincrease](https://aka.ms/oai/quotaincrease) |
 
 ---
 
