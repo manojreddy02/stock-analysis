@@ -1,2 +1,2 @@
-crewai[tools,azure-ai-inference]>=1.11.0
+crewai[tools,azure-ai-inference]>=1.13.0
 python-dotenv>=1.0.0
