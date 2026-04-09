@@ -60,6 +60,14 @@ if missing:
 # LLM CONFIGURATION (Azure OpenAI)
 # ─────────────────────────────────────────────
 
+# Some Azure model deployments reject the 'stop' parameter. Patch the native
+# Azure provider to skip sending stop words (they are still applied locally).
+try:
+    from crewai.llms.providers.azure.completion import AzureCompletion
+    AzureCompletion.supports_stop_words = lambda self: False
+except ImportError:
+    pass
+
 azure_llm = LLM(
     model=f"azure/{required_vars['AZURE_DEPLOYMENT_NAME']}",
     api_key=required_vars["AZURE_API_KEY"],
